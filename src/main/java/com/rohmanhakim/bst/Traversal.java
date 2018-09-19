@@ -158,6 +158,7 @@ public class Traversal {
         rootIndex = i;
       }
     }
+    System.out.println("root is: " + rootIndex);
     BST bst = new BST();
     bst.setRoot(vertices.get(rootIndex));
     return bst;

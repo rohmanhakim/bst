@@ -4,104 +4,43 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class IsItBSTHard {
+
   static class BST {
     Vertex root;
-    private Vertex prev;
-
-    BST() {
-    }
-
-    private boolean inOrderTraversal(Vertex x) {
-      if (x != null) {
-        if (!inOrderTraversal(x.getLeft()))
-          return false;
-        if (x.getKey() <= prev.getKey())
-          return false;
-        if (x.getKey() >= x.parent.key)
-          return false;
-        prev = x;
-        return inOrderTraversal(x.getRight());
-      }
-      return true;
-    }
   }
 
   static class Vertex {
 
-    private Vertex left;
-    private Vertex right;
-    private Vertex parent;
+    private Vertex left = null;
+    private Vertex right = null;
+    private Vertex parent = null;
 
     private int leftIndex;
     private int rightIndex;
 
     private int key;
 
-    public Vertex() {
-    }
-
-
-    public Vertex getLeft() {
-      return left;
-    }
-
-    public void setLeft(Vertex left) {
+    void setLeft(Vertex left) {
       this.left = left;
       left.parent = this;
     }
 
-    public Vertex getRight() {
-      return right;
-    }
-
-    public void setRight(Vertex right) {
+    private void setRight(Vertex right) {
       this.right = right;
       right.parent = this;
-    }
-
-    public Vertex getParent() {
-      return parent;
-    }
-
-    public void setParent(Vertex parent) {
-      this.parent = parent;
-    }
-
-    public int getKey() {
-      return key;
-    }
-
-    public void setKey(int key) {
-      this.key = key;
-    }
-
-    public int getLeftIndex() {
-      return leftIndex;
-    }
-
-    public void setLeftIndex(int leftIndex) {
-      this.leftIndex = leftIndex;
-    }
-
-    public int getRightIndex() {
-      return rightIndex;
-    }
-
-    public void setRightIndex(int rightIndex) {
-      this.rightIndex = rightIndex;
     }
   }
 
   private static BST construct(List<Vertex> vertices) {
 
-    for (int i = 0; i < vertices.size(); i++) {
-      Vertex v = vertices.get(i);
-      if (v.getLeftIndex() != -1) {
-        v.setLeft(vertices.get(v.getLeftIndex()));
+    for (Vertex v : vertices) {
+      if (v.leftIndex != -1) {
+        v.setLeft(vertices.get(v.leftIndex));
       }
-      if (v.getRightIndex() != -1) {
-        v.setRight(vertices.get(v.getRightIndex()));
+      if (v.rightIndex != -1) {
+        v.setRight(vertices.get(v.rightIndex));
       }
     }
     BST bst = new BST();
@@ -110,30 +49,49 @@ public class IsItBSTHard {
     return bst;
   }
 
+  private static boolean isBST(Vertex root, int min, int max){
+    if(root != null) {
+      if(root.left == null && root.right == null && root.parent == null){
+        return true;
+      }
+      if(root.key >= max || root.key < min){
+        return false;
+      }
+      return isBST(root.left,min,root.key) && isBST(root.right,root.key,max);
+    } else {
+      return true;
+    }
+  }
+
 
   public static void main(String[] args) {
+
+    int INT_MAX = 2147483647;
+    int INT_MIN = -2147483647;
+
     Scanner scanner = new Scanner((System.in));
     int n = scanner.nextInt();
     List<Vertex> vertices = new ArrayList<>();
 
     for (int i = 0; i < n; i++) {
       int key = scanner.nextInt();
-      int left = scanner.nextInt();
-      int right = scanner.nextInt();
+      int leftIndex = scanner.nextInt();
+      int rightIndex = scanner.nextInt();
 
       Vertex v = new Vertex();
-      v.setKey(key);
-      v.setLeftIndex(left);
-      v.setRightIndex(right);
+      v.key = key;
+      v.leftIndex = leftIndex;
+      v.rightIndex = rightIndex;
       vertices.add(v);
     }
 
     BST bst = construct(vertices);
 
-    if (bst.inOrderTraversal(bst.root)) {
-      System.out.print("CORRECT");
+    if(isBST(bst.root, INT_MIN, INT_MAX)){
+      System.out.println("CORRECT");
     } else {
       System.out.println("INCORRECT");
     }
+
   }
 }
